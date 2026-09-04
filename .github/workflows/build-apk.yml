@@ -1,4 +1,4 @@
-name: Build GOLEA APK
+name: Build GOLEA APK y AAB
 
 on:
   workflow_dispatch:
@@ -31,18 +31,21 @@ jobs:
         with:
           gradle-version: "8.10.2"
 
-      - name: Compilar APK
-        run: gradle :app:assembleDebug --stacktrace
+      - name: Compilar APK y AAB
+        run: gradle :app:assembleDebug :app:bundleRelease --stacktrace
 
-      - name: Preparar GOLEA.apk
+      - name: Preparar archivos
         run: |
           cp app/build/outputs/apk/debug/app-debug.apk GOLEA.apk
+          cp app/build/outputs/bundle/release/app-release.aab GOLEA-PlayStore-UNSIGNED.aab
 
-      - name: Guardar APK
+      - name: Guardar APK y AAB
         uses: actions/upload-artifact@v4
         with:
           name: GOLEA-Android-V1
-          path: GOLEA.apk
+          path: |
+            GOLEA.apk
+            GOLEA-PlayStore-UNSIGNED.aab
 
       - name: Publicar APK en Releases
         env:
